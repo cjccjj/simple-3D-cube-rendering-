@@ -9,17 +9,16 @@
   CS - N.A.
 
   Cube 3d vertices numbering and coordinates
-     7-------6
+     2-------7
     /|      /|
-   4-------5 |
-   | 3-----|-2
+   3-------6 |
+   | 5-----|-4
    |/      |/
    0-------1
 
   origin is at center of cube
   vertex 0 (-1,-1,1)
-  vertex 1 (1,-1,1)
-  ...
+  vertex 7 (1,1,-1)
 **************************************************************************/
 
 #include <SPI.h>
@@ -57,48 +56,44 @@ int vertex_2D[8][3];
 //which vertex is at back most
 int back_vertex = 0;
 
+
+//draw line linking  vertex a to vertex b
+void draw_line(int a, int b) {
+  display.drawLine(vertex_2D[a][0], vertex_2D[a][1], vertex_2D[b][0], vertex_2D[b][1], WHITE);
+}
+
+//draw full frame if is perpective projection, hide back sizes if orthographic projection
 void draw_frame(void) {
-  //draw full frame if is perpective projection, hide back sizes if orthographic projection
   if (fl < 999) {
     back_vertex = -1;
   }
 
-  //link 0123
-  if (!(back_vertex == 0 || back_vertex == 1)) {    display.drawLine(vertex_2D[0][0], vertex_2D[0][1], vertex_2D[1][0], vertex_2D[1][1], WHITE);  }
-  if (!(back_vertex == 1 || back_vertex == 2)) {    display.drawLine(vertex_2D[1][0], vertex_2D[1][1], vertex_2D[2][0], vertex_2D[2][1], WHITE);  }
-  if (!(back_vertex == 2 || back_vertex == 3)) {    display.drawLine(vertex_2D[2][0], vertex_2D[2][1], vertex_2D[3][0], vertex_2D[3][1], WHITE);  }
-  if (!(back_vertex == 3 || back_vertex == 0)) {    display.drawLine(vertex_2D[3][0], vertex_2D[3][1], vertex_2D[0][0], vertex_2D[0][1], WHITE);  }
-
-  //link 4567
-  if (!(back_vertex == 4 || back_vertex == 5)) {    display.drawLine(vertex_2D[4][0], vertex_2D[4][1], vertex_2D[5][0], vertex_2D[5][1], WHITE);  }
-  if (!(back_vertex == 5 || back_vertex == 6)) {    display.drawLine(vertex_2D[5][0], vertex_2D[5][1], vertex_2D[6][0], vertex_2D[6][1], WHITE);  }
-  if (!(back_vertex == 6 || back_vertex == 7)) {    display.drawLine(vertex_2D[6][0], vertex_2D[6][1], vertex_2D[7][0], vertex_2D[7][1], WHITE);  }
-  if (!(back_vertex == 7 || back_vertex == 4)) {    display.drawLine(vertex_2D[7][0], vertex_2D[7][1], vertex_2D[4][0], vertex_2D[4][1], WHITE);  }
-
-  //link 04 15 26 37
-  if (!(back_vertex == 0 || back_vertex == 4)) {    display.drawLine(vertex_2D[0][0], vertex_2D[0][1], vertex_2D[4][0], vertex_2D[4][1], WHITE);  }
-  if (!(back_vertex == 1 || back_vertex == 5)) {    display.drawLine(vertex_2D[1][0], vertex_2D[1][1], vertex_2D[5][0], vertex_2D[5][1], WHITE);  }
-  if (!(back_vertex == 2 || back_vertex == 6)) {    display.drawLine(vertex_2D[2][0], vertex_2D[2][1], vertex_2D[6][0], vertex_2D[6][1], WHITE);  }
-  if (!(back_vertex == 3 || back_vertex == 7)) {    display.drawLine(vertex_2D[3][0], vertex_2D[3][1], vertex_2D[7][0], vertex_2D[7][1], WHITE);  }
+  for (int i = 0; i < 8; i += 2) {
+    for (int j = i + 1; j < i + 7; j += 2) {
+      if (back_vertex != i && back_vertex != j%8 ) {
+        draw_line(i, j%8 );
+      }
+    }
+  }
 }
 
 void cubeloop(void) {
 
   float rot, rotx, roty, rotz, rotxx, rotyy, rotzz;
 
-  //initail unit cube position
+  //cube coordinate see top of code
   int vertex[8][3] = {
-    { -1, -1, 1}, //vertex 0
-    {1, -1, 1},   //vertex 1
-    {1, 1, 1},    //...
+    { -1, -1, 1},
+    {1, -1, 1},
+    { -1, 1, -1},
     { -1, 1, 1},
-    { -1, -1, -1},
     {1, -1, -1},
-    {1, 1, -1},
-    { -1, 1, -1} //vertex 7
+    { -1, -1, -1},
+    {1, 1, 1},
+    {1, 1, -1}
   };
 
-  //calculate vertex coord
+  //calculate vertex coord with size
   for (int i = 0; i < 8; i++) {
     for (int j = 0; j < 3; j++) {
       vertex[i][j] = vertex[i][j] * cubesize / 2;
@@ -169,7 +164,7 @@ void setup() {
     for (;;); // Don't proceed, loop forever
   }
   display.clearDisplay();
-  display.setTextColor(WHITE, BLACK); 
+  display.setTextColor(WHITE, BLACK);
   display.display();
   display.clearDisplay();
 }
