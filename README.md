@@ -1,12 +1,14 @@
 simple-3D-cube-rendering
 
 This is to show a different way to draw a cube in a routine. I have searched different codes to draw a cube, but they are all hard coded, drawing 12 edges one by one. Because a cube is 3D, it has 8 vertices, but 12 edges, so, you can't simply create a 8 steps loop and draw 12 edges to connect them as a cube. I tried to change the order of vertices, including some logic to avoid repeating a line, but they don't work or are too complicated that are meaningless.
+```
      7-------6
     /|      /|
    4-------5 |
    | 3-----|-2
    |/      |/
    0-------1
+```
 
 Until I found the way below, that you group the vertices into 4 even and 4 odd-vertex, and an even vertex only connect to 3 odd vertex, and wise verse.
      2-------7
