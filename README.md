@@ -11,21 +11,23 @@ This is to show a different way to draw a cube in a routine. I have searched dif
 ```
 
 Until I found the way below, that you group the vertices into 4 even and 4 odd-vertex, and an even vertex only connect to 3 odd vertex, and wise verse.
+```
      2-------7
     /|      /|
    3-------6 |
    | 5-----|-4
    |/      |/
    0-------1
+   ```
 
 In this coordination, the 12 edges can be drawn in a loop of 4, which I think is clean and nice. Also it reflects the fundamental math of a cube.
-
+```
 for (int i = 0; i < 8; i += 2) {
     for (int j = i + 1; j < i + 7; j += 2) {
           draw_line(i, j % 8 ); 
     }
 }
-  
+```
 
 Hardware:
   - Arduino Nano
